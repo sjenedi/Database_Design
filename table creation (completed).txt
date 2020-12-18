@@ -1,0 +1,131 @@
+CREATE TABLE FACULTY(
+	name VARCHAR(20) NOT NULL,
+	dean VARCHAR(20) NOT NULL,
+	building VARCHAR(20) NOT NULL,
+	PRIMARY KEY (name)
+);
+
+CREATE TABLE COMMITTEE(
+	name VARCHAR(20) NOT NULL,
+	faculty VARCHAR(20) NOT NULL,
+	title VARCHAR(20) NOT NULL,
+	frequency VARCHAR(20) NOT NULL,
+	PRIMARY KEY (name, faculty),
+	FOREIGN KEY (faculty) REFERENCES FACULTY(name)
+);
+
+CREATE TABLE SCHOOL(
+	name VARCHAR(20) NOT NULL,
+	faculty VARCHAR(20) NOT NULL,
+	campus VARCHAR(20) NOT NULL,
+	building VARCHAR(20) NOT NULL,
+	PRIMARY KEY (name)
+	FOREIGN KEY (faculty) REFERENCES FACULTY(name),
+	FOREIGN KEY (campus) REFERENCES CAMPUS(name)
+);
+
+CREATE TABLE CAMPUS (
+	name VARCHAR(20) NOT NULL,
+	address VARCHAR(60) NOT NULL,
+	distance FLOAT(6,2) NOT NULL,
+	bus VARCHAR(20) NOT NULL,
+	PRIMARY KEY (name)
+);
+
+CREATE TABLE CLUB (
+	name VARCHAR(20) NOT NULL,
+	campus VARCHAR(20) NOT NULL,
+	building VARCHAR(20) NOT NULL,
+	phone_number CHAR(10) NOT NULL,
+	PRIMARY KEY (name, campus),
+	FOREIGN KEY (campus) REFERENCES CAMPUS(name)
+);
+
+CREATE TABLE PROGRAM (
+	code CHAR(4) NOT NULL,
+	title VARCHAR(20) NOT NULL,
+	level VARCHAR(20) NOT NULL,
+	duration VARCHAR(3) NOT NULL,
+	school VARCHAR(20) NOT NULL,
+	PRIMARY KEY (code),
+	FOREIGN KEY (school) REFERENCES SCHOOL(name)
+);
+
+CREATE TABLE STUDENT (
+	id CHAR(10) NOT NULL,
+	name VARCHAR(40) NOT NULL,
+	program CHAR(4) NOT NULL,
+	gpa FLOAT(3,2) NOT NULL,
+	birthday DATE NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (program) REFERENCES PROGRAM(code)
+);
+
+CREATE TABLE SPORT (
+	club VARCHAR(20) NOT NULL,
+	name VARCHAR(20) NOT NULL,
+	PRIMARY KEY (club, name),
+	FOREIGN KEY (club) REFERENCES CLUB(name)
+);
+
+CREATE TABLE COURSE (
+	code CHAR(4) NOT NULL,
+	title VARCHAR(20) NOT NULL,
+	program CHAR(4) NOT NULL,
+	hours INTEGER NOT NULL,
+	PRIMARY KEY (code),
+	FOREIGN KEY (program) REFERENCES PROGRAM(code)
+);
+
+CREATE TABLE LECTURER (
+	id CHAR(10) NOT NULL,
+	supervisor CHAR(10) NOT NULL,
+	title VARCHAR(20) NOT NULL,
+	office_room CHAR(10) NOT NULL,
+	school VARCHAR(20) NOT NULL,
+	name VARCHAR(20) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (school) REFERENCES SCHOOL(name)
+);
+
+CREATE TABLE LECTURER_COMMITTEE (
+	lecturer_id CHAR(10) NOT NULL,
+	committee_name VARCHAR(20) NOT NULL,
+	faculty VARCHAR(20) NOT NULL,
+	PRIMARY KEY (lecturer_id, committee_name, faculty),
+	FOREIGN KEY (lecturer_id) REFERENCES LECTURER(id),
+	FOREIGN KEY (committee_name) REFERENCES COMMITTEE(name),
+	FOREIGN KEY (faculty) REFERENCES FACULTY(name)
+);
+
+CREATE TABLE STUDENT_COURSE (
+	student_id CHAR(10) NOT NULL,
+	section_id CHAR(10) NOT NULL,
+	grade FLOAT (4,2) NOT NULL,
+	PRIMARY KEY (student_id, section_id),
+	FOREIGN KEY (section_id) REFERENCES SECTION(id),
+	FOREIGN KEY (student_id) REFERENCES STUDENT(id)
+);
+
+CREATE TABLE SECTION (
+	id CHAR(10) NOT NULL,
+	lecturer_id CHAR(10) NOT NULL,
+	course_code CHAR(4) NOT NULL,
+	building VARCHAR(20) NOT NULL,
+	room VARCHAR(8) NOT NULL,
+	time CHAR(7) NOT NULL,
+	day VARCHAR(10) NOT NULL,
+	year CHAR(4)NOT NULL,
+	semester CHAR(2) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (lecturer_id) REFERENCES LECTURER(id),
+	FOREIGN KEY (course_code) REFERENCES COURSE(code)
+);
+
+CREATE TABLE PREREQUISITE (
+	course_code CHAR(4) NOT NULL,
+	prerequisite_code CHAR(4) NOT NULL,
+	PRIMARY KEY (course_code, prerequisite_code),
+	FOREIGN KEY (course_code) REFERENCES COURSE(code),
+	FOREIGN KEY (prerequisite_code) REFERENCES COURSE(code)
+);

@@ -1,0 +1,16 @@
+CREATE TABLE CAMPUS (
+	name VARCHAR(20) NOT NULL,
+	address VARCHAR(60) NOT NULL,
+	distance FLOAT(6,2) NOT NULL,
+	bus VARCHAR(20) NOT NULL,
+	PRIMARY KEY (name)
+);
+
+CREATE TABLE CLUB (
+	name VARCHAR(20) NOT NULL,
+	campus VARCHAR(20) NOT NULL,
+	building VARCHAR(20) NOT NULL,
+	phone_number CHAR(10) NOT NULL,
+	Primary Key (name, campus),
+	Foreign Key (campus) REFERENCES CAMPUS(name)
+);
